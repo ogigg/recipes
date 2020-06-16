@@ -27,6 +27,7 @@ function HomePage() {
             <Col md="auto"><RecipeThumbnail/></Col>
             <Col md="auto"><RecipeThumbnail/></Col>
             <Col md="auto"><RecipeThumbnail/></Col>
+            <Col md="auto"><RecipeThumbnail/></Col>
             
 
           </Row>

@@ -10,6 +10,7 @@ import HomePage from './components/HomePage';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from './components/Header';
 import Recipe from './components/Recipe/Recipe'
+import AddNewRecipe from './components/Recipe/AddNewRecipe'
 
 
 function App() {
@@ -19,8 +20,8 @@ function App() {
     <Router>
       <div>
         <Switch>
-          <Route path="/about">
-            aaa
+          <Route path="/add">
+            <AddNewRecipe/>
           </Route>
           <Route path="/recipes/1">
             <Recipe></Recipe>
