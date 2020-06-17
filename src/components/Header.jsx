@@ -22,7 +22,6 @@ function HomePage() {
           </Navbar.Collapse>
           </Navbar>
       </div>
-
     );
   }
   

@@ -24,7 +24,7 @@ function App() {
             <AddNewRecipe/>
           </Route>
           <Route path="/recipes/1">
-            <Recipe></Recipe>
+            <Recipe/>
           </Route>
           <Route path="/">
             <HomePage/>

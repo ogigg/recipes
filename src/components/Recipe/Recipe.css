@@ -14,3 +14,12 @@
 .add-form-input {
     margin-bottom: 5px;
 }
+
+.form-error {
+    background-color: pink;
+    border-radius: 15px;
+    margin-bottom: 5px;
+}
+.form-error:before {
+    content: "\00a0 \00a0 ";
+}

@@ -8,11 +8,16 @@ import Form from 'react-bootstrap/Form';
 import FormControl from 'react-bootstrap/Form';
 import './Recipe.css';
 import TextareaAutosize from 'react-textarea-autosize';
+import { useForm, ErrorMessage   } from "react-hook-form";
 
+
+const errorMsg = (<div className = "form-error">This field is required</div>);
 
 
 
 function AddNewRecipe() {
+    
+
     const recipeObj = {
         name: "",
         preparationTime: "",
@@ -22,17 +27,20 @@ function AddNewRecipe() {
         image: {name: "Upload recipe image here"},
     }
 
-    const [isEdit, setIsEdit] = useState(false);
+    
     const [recipe, setRecipe] = useState(recipeObj);
+    const { register, errors, handleSubmit  } = useForm();
 
-    const handleSubmit = () => {
+
+    const onSubmit = () => {
         
         console.log(recipe);
+        
         const data = new FormData() 
         data.append('file', recipe.image)
         
         data.append('json', JSON.stringify(recipe))
-        fetch('http://localhost:4000/upload', {
+        fetch('http://localhost:4000/api/upload', {
             method: 'POST',
             body: data
           })
@@ -50,11 +58,14 @@ function AddNewRecipe() {
         
         console.log(image);
     }
+
     const handleAddStep = () => {
         setRecipe({...recipe, preparingSteps : [...recipe.preparingSteps,""]})
+        
     }
 
     const handleAddIngredient = () => {
+        console.log(errors);
         setRecipe({...recipe, ingredients : [...recipe.ingredients, {quantity: "", name: ""}]})
     }
 
@@ -76,66 +87,92 @@ function AddNewRecipe() {
     }
     const preparingSteps = recipe.preparingSteps.map((step, index) => {
         let placeholder = `Step ${index+1}`
+        let error = errors.preparingStep && errorMsg
+        if(Array.isArray(errors.preparingStep) && errors.preparingStep.length){
+            error = errors.preparingStep[index] && errorMsg
+        }
         return (
         <Row>
             <Col>
                 <TextareaAutosize class="form-control add-form-input" 
-                type="quantity" placeholder={placeholder}
+                placeholder={placeholder}
                 value = {step} 
                 onChange = {e => handleStepChange(index, e)}
+                name={`preparingStep[${index}]`}
+                ref={register({ required: true })} 
                 />
+                {/* {error} */}
             </Col>
         </Row>
         )})
 
     const ingredients = recipe.ingredients.map((ingredient, index) => {
-        let placeholder = `Step ${index+1}`
+        const placeholder = `Step ${index+1}`
+       
         return (
         <Row>
             <Col xs={6}>
                 <Form.Control className = "add-form-input" type="quantity" placeholder="Quantity"
                 value = {ingredient.quantity} 
-                onChange = {e => handleIngredientQuantityChange(index, e)} />
+                onChange = {e => handleIngredientQuantityChange(index, e)}
+                name= {`quantity[${index}]`}
+                />
             </Col>
             <Col xs={6}>
-                <Form.Control className = "add-form-input" type="name" placeholder="Product" 
+                <Form.Control className = "add-form-input" type="name" placeholder="Ingredient" 
                 value = {ingredient.name} 
-                onChange = {e => handleIngredientNameChange(index, e)} />
+                onChange = {e => handleIngredientNameChange(index, e)} 
+                name={`ingredientName[${index}]`}
+                />
             </Col>
         </Row>
         )})
+
     return (
         <Container> 
+           
+            <Form onSubmit={handleSubmit(onSubmit)}>
+                
             <Row > 
             <Col md>
             <h2>Recipe details</h2>
 
                 <Form.Control 
+                name="name"
                 className = "add-form-input" 
                 placeholder="Recipe name" 
                 value={recipe.name}
-                onChange={ e => setRecipe({...recipe, name : e.target.value})}/>
-
+                onChange={ e => setRecipe({...recipe, name : e.target.value})}
+                ref={register({ required: true })} />
+                {errors.name && errorMsg}
+                <ErrorMessage errors={errors} name="name" as="p">
+                </ErrorMessage>
                 <Form.Control  
                 className = "add-form-input" 
                 placeholder="Preparation time" 
                 value={recipe.preparationTime}
-                onChange={ e => setRecipe({...recipe, preparationTime : e.target.value})}/>
-
+                onChange={ e => setRecipe({...recipe, preparationTime : e.target.value})}
+                name="preparationTime"
+                ref={register({ required: true })} />
+                {errors.preparationTime && errorMsg}
 
                 <Form.File className = "add-form-input"
                     id="custom-file"
                     label={recipe.image.name}
                     custom  
-                    onChange = {e => {handleFileUpload(e)}}/>
+                    onChange = {e => {handleFileUpload(e)}}
+                    name="fileUpload"
+                    ref={register({ required: true })} />
+                    {errors.fileUpload && errorMsg}
 
                 <TextareaAutosize type="description" class="form-control add-form-input"  
                 key = "description"
                 value={recipe.description}
                 onChange={ e => setRecipe({...recipe, description : e.target.value})}
-                placeholder="Add description here"
-                
-                ></TextareaAutosize>
+                placeholder="Recipe description"
+                name="description"
+                 />
+
 
             </Col>
             <Col md>
@@ -155,7 +192,8 @@ function AddNewRecipe() {
                 
             </Col>
             </Row>
-            <Button submit variant="primary" className = "add-form-input" onClick = {handleSubmit}>Submit</Button>
+            <Button type="submit" variant="primary" className = "add-form-input" >Submit</Button>
+            </Form>
         </Container>
 
     );
