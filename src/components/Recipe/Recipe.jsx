@@ -3,42 +3,24 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
-import Form from 'react-bootstrap/Form';
-import FormControl from 'react-bootstrap/Form';
 import './Recipe.css';
-import TextareaAutosize from 'react-textarea-autosize';
-import { getRecipe, deleteRecipe } from './../api';
-
-
-
-
-
+import { getRecipe, deleteRecipe } from '../misc/api';
+import RecipeThumbnail from './../RecipeThumbnail';
 
 
 
 function Recipe(props) {
-    const recipeObj = {
-        name: "Caesar salad",
-        preparationTime: "45min",
-        ingredients: [{quantity: '1', name: 'bread'},
-        {quantity: '50g', name: 'sugar'},
-        {quantity: '1kg', name: 'flour'},
-        {quantity: '100g', name: 'butter'}],
-    
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Proin nibh augue, suscipit a, scelerisque sed, lacinia in, mi. Cras vel lorem. Etiam pellentesque aliquet tellus. Phasellus pharetra nulla ac diam. Quisque semper justo at risus. Donec venenatis, turpis vel hendrerit interdum, dui ligula ultricies purus, sed posuere libero dui id orci. Nam congue, pede vitae dapibus aliquet, elit magna vulputate arcu, vel tempus metus leo non est. Etiam sit amet lectus quis est congue mollis. Phasellus congue lacus eget neque. Phasellus ornare, ante vitae consectetuer consequat, purus sapien ultricies dolor, et mollis pede metus eget nisi. Praesent sodales velit quis augue. Cras suscipit, urna at aliquam rhoncus, urna quam viverra nisi, in interdum massa nibh nec erat.",
-    }
 
     const [isEdit, setIsEdit] = useState(false);
     const [recipe, setRecipe] = useState({ingredients:[], preparingSteps:[]});
 
 
-    useEffect(() => {
-      getRecipe(props.match.params.id).then(recipes => {
-        console.log(recipes)
-        setRecipe(recipes)
+    useEffect(() => { //load recipe on page load
+      getRecipe(props.match.params.id).then(recipe => {
+        console.log(recipe)
+        setRecipe(recipe)
       });
-    }, []);
+    }, [props]);
     
 
     const ingredients = recipe.ingredients.map((ingredient) => 
@@ -64,19 +46,7 @@ function Recipe(props) {
         <Container> 
             <Row >
             <Col md>
-                <Card className="card-recipe" >
-                    <div class="img-gradient ">
-                        <img class="card-img recipe-image" src={recipe.imageUrl} alt="Card image"></img>
-                    </div>
-                    
-                    <div class="card-img-overlay">
-                        <div className = "thumbnail-text">
-                            <div class="text-light card-text text-small">{recipe.preparationTime}</div>
-                            <h5 class="card-title text-light text-big">{recipe.name}</h5>
-                        </div>
-                        
-                    </div>
-                </Card>
+                <RecipeThumbnail size = {'100%'} recipe = {recipe}></RecipeThumbnail>
                <div>{recipe.description}</div>
             </Col>
             <Col md>

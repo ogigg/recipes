@@ -1,9 +1,10 @@
 import React from 'react';
 import './../App.css';
-import Button from 'react-bootstrap/Button';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import { GiKitchenKnives } from "react-icons/gi";
+
+
 function HomePage() {
     return (
       <div>
@@ -12,7 +13,6 @@ function HomePage() {
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
               <Nav className="mr-auto">
-
               </Nav>
               <Nav>
               <Nav.Link href="/add">Add new recipe</Nav.Link>

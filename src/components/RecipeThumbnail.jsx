@@ -1,18 +1,17 @@
 import React from 'react';
 import './../App.css';
-import Button from 'react-bootstrap/Button';
-import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
 import Card from 'react-bootstrap/Card';
 
 function RecipeThumbnail(props) {
-
+    let style = {}
+    if(props.size){
+        style = {width: props.size, height: 'auto'}
+    }
     return (
         <a href={`/recipes/${props.recipe.id}`}>
-        <Card >
+        <Card style = {style}>
             <div className="img-gradient">
-                {/* <img className="card-img" src={require('./../images/caesar-salad.jpg')} alt="Card image"></img> */}
-                <img className="card-img" src={(props.recipe.imageUrl)} alt="Card image"></img>
+                <img className="card-img" src={(props.recipe.imageUrl)} alt="Card"></img>
             </div>
             
             <div className="card-img-overlay">

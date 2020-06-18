@@ -4,7 +4,7 @@ const cors = require('cors');
 
 const app = express()
 const port = 4000
-
+const fs = require('fs');
 
 app.use(cors())
 app.use('/static', express.static('images'))
@@ -55,7 +55,7 @@ const recipes = [
     "Poach 2 eggs in hot, but not boiling, water to the desired degree of hardness. For a runny center, approx. 3 - 5 min. is recommended. Transfer to a paper towel to dry.",
     "Mix the lettuce, tomatoes, cucumber, and olives with the dressing and transfer to a plate. Sprinkle the bread chips on top and serve with a poached egg and Parmesan shavings.",
 ],
-    imageUrl: 'http://localhost:4000/static/caesar-salad.jpg',
+    imageUrl: 'http://localhost:4000/static/caesar-salad-3.jpg',
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent tincidunt sit amet augue dignissim bibendum. Suspendisse potenti. Phasellus rutrum risus tortor, vulputate lobortis nibh vestibulum vel. Donec eu malesuada justo, ac aliquam dui. Vivamus vitae dui et lacus lacinia pretium eu at justo. Aenean consequat accumsan mattis. Vivamus pretium sed turpis nec feugiat.",
 
 },
@@ -127,11 +127,19 @@ app.get('/api/recipes/:id', (req, res) => {
 })
 app.delete('/api/recipes/:id', (req, res) => {
     console.log(`Deleting recipe with id ${req.params.id}`)
-    const recipeToDelete = recipes.findIndex(function(i){
+    const recipeToDeleteIndex = recipes.findIndex(function(i){
         return i.id == req.params.id;
     })
+    const recipeToDelete = recipes[recipeToDeleteIndex];
+
+    const imageName = recipeToDelete.imageUrl.split('/').pop();
+    fs.unlink(`./images/${imageName}`, function (err) {
+        if (err) throw err;
+        // if no error, file has been deleted successfully
+        console.log('File deleted!');
+    }); 
     // console.log(recipeToDelete)
-    recipes.splice(recipeToDelete, 1);
+    recipes.splice(recipeToDeleteIndex, 1);
     res.send("Deleted");
 })
 
