@@ -19,10 +19,7 @@ function AddNewRecipe() {
     
 
     const recipeObj = {
-        name: "",
-        preparationTime: "",
         ingredients: [{quantity: "", name: ""}],
-        description: "",
         preparingSteps: [""],
         image: {name: "Upload recipe image here"},
     }
@@ -32,18 +29,22 @@ function AddNewRecipe() {
     const { register, errors, handleSubmit  } = useForm();
 
 
-    const onSubmit = () => {
-        
-        console.log(recipe);
+    const onSubmit = (formData) => {
+        console.log(formData)
         
         const data = new FormData() 
-        data.append('file', recipe.image)
         
-        data.append('json', JSON.stringify(recipe))
+        
+        data.append('json', JSON.stringify(formData));
+        data.append('file', recipe.image);
+
         fetch('http://localhost:4000/api/upload', {
             method: 'POST',
+            headers:{
+                contentType : 'multipart/form-data'
+            },
             body: data
-          })
+          }).then(window.location.href = "/")
     }
 
     const handleFileUpload = (e) => {
@@ -69,22 +70,6 @@ function AddNewRecipe() {
         setRecipe({...recipe, ingredients : [...recipe.ingredients, {quantity: "", name: ""}]})
     }
 
-    const handleStepChange = (index, e) => {
-        let tempArr = [...recipe.preparingSteps];
-        tempArr[index] = e.target.value
-        setRecipe({...recipe, preparingSteps : tempArr})
-    }
-
-    const handleIngredientQuantityChange = (index, e) => {
-        let tempArr = [...recipe.ingredients];
-        tempArr[index].quantity = e.target.value
-        setRecipe({...recipe, ingredients : tempArr})
-    }
-    const handleIngredientNameChange = (index, e) => {
-        let tempArr = [...recipe.ingredients];
-        tempArr[index].name = e.target.value
-        setRecipe({...recipe, ingredients : tempArr})
-    }
     const preparingSteps = recipe.preparingSteps.map((step, index) => {
         let placeholder = `Step ${index+1}`
         let error = errors.preparingStep && errorMsg
@@ -96,33 +81,28 @@ function AddNewRecipe() {
             <Col>
                 <TextareaAutosize class="form-control add-form-input" 
                 placeholder={placeholder}
-                value = {step} 
-                onChange = {e => handleStepChange(index, e)}
                 name={`preparingStep[${index}]`}
                 ref={register({ required: true })} 
                 />
-                {/* {error} */}
+                {error}
             </Col>
         </Row>
         )})
 
     const ingredients = recipe.ingredients.map((ingredient, index) => {
-        const placeholder = `Step ${index+1}`
        
         return (
         <Row>
             <Col xs={6}>
                 <Form.Control className = "add-form-input" type="quantity" placeholder="Quantity"
-                value = {ingredient.quantity} 
-                onChange = {e => handleIngredientQuantityChange(index, e)}
-                name= {`quantity[${index}]`}
+                name= {`ingredients[${index}].quantity`}
+                ref={register()}
                 />
             </Col>
             <Col xs={6}>
                 <Form.Control className = "add-form-input" type="name" placeholder="Ingredient" 
-                value = {ingredient.name} 
-                onChange = {e => handleIngredientNameChange(index, e)} 
-                name={`ingredientName[${index}]`}
+                name={`ingredients[${index}].name`}
+                ref={register()}
                 />
             </Col>
         </Row>
@@ -141,8 +121,6 @@ function AddNewRecipe() {
                 name="name"
                 className = "add-form-input" 
                 placeholder="Recipe name" 
-                value={recipe.name}
-                onChange={ e => setRecipe({...recipe, name : e.target.value})}
                 ref={register({ required: true })} />
                 {errors.name && errorMsg}
                 <ErrorMessage errors={errors} name="name" as="p">
@@ -150,8 +128,6 @@ function AddNewRecipe() {
                 <Form.Control  
                 className = "add-form-input" 
                 placeholder="Preparation time" 
-                value={recipe.preparationTime}
-                onChange={ e => setRecipe({...recipe, preparationTime : e.target.value})}
                 name="preparationTime"
                 ref={register({ required: true })} />
                 {errors.preparationTime && errorMsg}
@@ -167,10 +143,9 @@ function AddNewRecipe() {
 
                 <TextareaAutosize type="description" class="form-control add-form-input"  
                 key = "description"
-                value={recipe.description}
-                onChange={ e => setRecipe({...recipe, description : e.target.value})}
                 placeholder="Recipe description"
                 name="description"
+                ref={register()}
                  />
 
 

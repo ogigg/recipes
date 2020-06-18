@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
@@ -8,6 +8,7 @@ import Form from 'react-bootstrap/Form';
 import FormControl from 'react-bootstrap/Form';
 import './Recipe.css';
 import TextareaAutosize from 'react-textarea-autosize';
+import { getRecipe, deleteRecipe } from './../api';
 
 
 
@@ -16,8 +17,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 
 
 
-
-function Recipe() {
+function Recipe(props) {
     const recipeObj = {
         name: "Caesar salad",
         preparationTime: "45min",
@@ -30,67 +30,43 @@ function Recipe() {
     }
 
     const [isEdit, setIsEdit] = useState(false);
-    const [recipe, setRecipe] = useState(recipeObj);
+    const [recipe, setRecipe] = useState({ingredients:[], preparingSteps:[]});
 
-    const ingredients = recipe.ingredients.map((ingredient) => {
-    if(isEdit) return (
-        
-    <Row>
-        <Col xs={4}>
-            <Form.Control type="quantity" placeholder="Enter email" value={ingredient.quantity} />
-        </Col>
-        <Col xs={4}>
-            <Form.Control type="name" placeholder="Enter email" value={ingredient.name} />
-        </Col>
 
-    </Row>
-    )
-    else return (
+    useEffect(() => {
+      getRecipe(props.match.params.id).then(recipes => {
+        console.log(recipes)
+        setRecipe(recipes)
+      });
+    }, []);
+    
+
+    const ingredients = recipe.ingredients.map((ingredient) => 
     <Row>
-        <Col xs={4}>{ingredient.quantity}</Col>
-        <Col xs={8}>{ingredient.name}</Col>
+        <Col xs={2}>{ingredient.quantity}</Col>
+        <Col xs={10}>{ingredient.name}</Col>
     </Row>)
+
+
+    const preparingSteps = recipe.preparingSteps.map((step, index) => 
+    <Row>
+        <Col><p>{`${index+1}\t ${step}`}</p></Col>
+    </Row>)
+
+
+    const handleDelete = () => {
+        deleteRecipe(props.match.params.id).then(alert("Deleted!")).then(window.location.href = "/");
+        console.log("Delete");
     }
-    )
-    const handleChange = (e) => {
 
-        console.log(e.target.value);
-        setRecipe({...recipe, description : e.target.value});
-    }
-
-    const description = () => {return <TextareaAutosize type="description" class="form-control" value={recipe.description} 
-    key = "description"
-    onChange={ e => setRecipe({...recipe, description : e.target.value})}
-    placeholder="Add description here"
-    
-    ></TextareaAutosize>}
-    const Description = () => {
-        if(isEdit)
-            return (
-                <Form>
-                <TextareaAutosize type="description" class="form-control" value={recipe.description} 
-                key = "description"
-                onChange={ e => setRecipe({...recipe, description : e.target.value})}
-                placeholder="Add description here"
-                
-                ></TextareaAutosize>
-                </Form>
-                )
-        
-
-        else return (<div>{recipe.description}</div>)
-        }
-    
-            
-    
-
+ 
     return (
         <Container> 
             <Row >
             <Col md>
                 <Card className="card-recipe" >
                     <div class="img-gradient ">
-                        <img class="card-img recipe-image" src={require('./../../images/caesar-salad.jpg')} alt="Card image"></img>
+                        <img class="card-img recipe-image" src={recipe.imageUrl} alt="Card image"></img>
                     </div>
                     
                     <div class="card-img-overlay">
@@ -101,11 +77,13 @@ function Recipe() {
                         
                     </div>
                 </Card>
-               <Description></Description>
-               {description}
+               <div>{recipe.description}</div>
             </Col>
             <Col md>
-                <Button variant="outline-warning" onClick = { () => setIsEdit(!isEdit)}>Edit</Button>
+
+                <Button variant="outline-warning" className = "recipe-button" onClick = { () => setIsEdit(!isEdit)}>Edit</Button>
+                <Button variant="outline-danger" className = "recipe-button" onClick = { () => handleDelete()}>Delete</Button>
+
                 <h2>Ingredients</h2>
                 {ingredients}
             </Col>
@@ -114,32 +92,9 @@ function Recipe() {
             <Row>
             <Col md>
                 <h2>Preparing</h2>
-                <Row>
-                    <Col xs={2}>1</Col>
-                    <Col xs={10}>Włącz piekarnik</Col>
-                </Row>
+                {preparingSteps}
             </Col>
             </Row>
-            {/* <Form>
-                <Form.Group controlId="formBasicEmail">
-                    <Form.Label>Email address</Form.Label>
-                    <Form.Control type="email" placeholder="Enter email" />
-                    <Form.Text className="text-muted">
-                    We'll never share your email with anyone else.
-                    </Form.Text>
-                </Form.Group>
-
-                <Form.Group controlId="formBasicPassword">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" placeholder="Password" />
-                </Form.Group>
-                <Form.Group controlId="formBasicCheckbox">
-                    <Form.Check type="checkbox" label="Check me out" />
-                </Form.Group>
-                <Button variant="primary" type="submit">
-                    Submit
-                </Button>
-            </Form> */}
         </Container>
 
     );

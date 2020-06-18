@@ -5,18 +5,20 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Card from 'react-bootstrap/Card';
 
-function RecipeThumbnail() {
+function RecipeThumbnail(props) {
+
     return (
-        <a href="/recipes/1">
+        <a href={`/recipes/${props.recipe.id}`}>
         <Card >
-            <div class="img-gradient">
-                <img class="card-img" src={require('./../images/caesar-salad.jpg')} alt="Card image"></img>
+            <div className="img-gradient">
+                {/* <img className="card-img" src={require('./../images/caesar-salad.jpg')} alt="Card image"></img> */}
+                <img className="card-img" src={(props.recipe.imageUrl)} alt="Card image"></img>
             </div>
             
-            <div class="card-img-overlay">
+            <div className="card-img-overlay">
                 <div className = "thumbnail-text">
-                    <div class="text-light card-text text-small">50 min</div>
-                    <h5 class="card-title text-light text-big">Cezar</h5>
+                <div className="text-light card-text text-small">{props.recipe.preparationTime}</div>
+                    <h5 className="card-title text-light text-big">{props.recipe.name}</h5>
                 </div>
                 
             </div>
@@ -28,7 +30,3 @@ function RecipeThumbnail() {
   }
   
 export default RecipeThumbnail;
-{/* <div>
-          <img className = "thumbnail-image" src={require('./images/caesar-salad.jpg')}></img>
-         miniaturka
-      </div> */}

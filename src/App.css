@@ -18,14 +18,9 @@
   margin: auto;
   margin-bottom: 5px;
   margin-top: 5px;
+  height: 400px;
 }
 
-.thumbnail-image {
-  border-radius: 15px;
-  max-height: 500px;
-  max-width: 500px;
-  margin: 5px;
-}
 
 .text-small{
   font-size: 1rem;
@@ -46,6 +41,7 @@
 .img-gradient {
   position:relative;
   display:inline-block;
+  height: 100%;
 }
 
 .img-gradient:after {
@@ -64,6 +60,7 @@
 }
 .img-gradient img{
   display:block;
+  height: 100%;
 }
 
 

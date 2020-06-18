@@ -8,6 +8,7 @@
     margin: auto;
     margin-bottom: 5px;
     margin-top: 5px;
+    height: auto;
   }
 
 
@@ -22,4 +23,10 @@
 }
 .form-error:before {
     content: "\00a0 \00a0 ";
+}
+
+.recipe-button {
+
+    margin: 5px;
+    min-width: 100px;
 }

@@ -23,8 +23,8 @@ function App() {
           <Route path="/add">
             <AddNewRecipe/>
           </Route>
-          <Route path="/recipes/1">
-            <Recipe/>
+          <Route path="/recipes/:id" component={Recipe}>
+            
           </Route>
           <Route path="/">
             <HomePage/>
