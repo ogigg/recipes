@@ -3,6 +3,13 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ## Available Scripts
 
 In the project directory, you can run:
+### `yarn all`
+
+Runs the client and server with one command
+
+### `cd backend && node server.js`
+
+Runs server backend at http://localhost:4000
 
 ### `yarn start`
 
